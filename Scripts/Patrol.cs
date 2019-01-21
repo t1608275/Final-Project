@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Patrol : MonoBehaviour {
-
+    
+//make animator visibile in inspector but private to patrol script only
+    [SerializeField] private Animator _animator;
+    
     public float movementSpeed = 5f;
     public float rotationSpeed = 90F;
 
@@ -11,12 +14,22 @@ public class Patrol : MonoBehaviour {
     private bool RotatingLeft = false;
     private bool RotatingRight = false;
     private bool walking = false;
+    private bool _isChatOpen; 
+    private static readonly int WalkAnimHash = Animator.StringToHash("Forward");
 
 
 
     // Use this for initialization
     void Start() {
+        gamemanager.Instance.OpenedChat += OnOpenedChat;
 
+    }
+    
+    private void OnOpenedChat()
+    {
+        //if chatbox is open make ai stop patrolling 
+        _isChatOpen = true;
+        _animator.SetFloat(WalkAnimHash, 0.0f);
     }
 
     // Update is called once per frame
