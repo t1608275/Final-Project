@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -12,6 +13,7 @@ public class gamemanager : MonoBehaviour
 
     public static gamemanager Instance;
     public int MaxMessages = 20;
+    public event Action OpenedChat;
 
     public GameObject chatpanel, textObject;
     
@@ -35,9 +37,11 @@ public class gamemanager : MonoBehaviour
     {
         // check my chat box parent active or not
         if (!chatCanvas.gameObject.activeSelf)
+        {
             chatCanvas.gameObject.SetActive(true);
+            if(OpenedChat != null) OpenedChat.Invoke();
+        }
     }
-    
     // Update is called once per frame
     void Update()
     {
