@@ -14,6 +14,7 @@ public class gamemanager : MonoBehaviour
     public static gamemanager Instance;
     public int MaxMessages = 20;
     public event Action OpenedChat;
+    public event Action ClosedChat;
 
     public GameObject chatpanel, textObject;
     
@@ -75,13 +76,33 @@ public class gamemanager : MonoBehaviour
 
         if (chatCanvas == true && Input.GetKeyDown(KeyCode.Escape))
 
-             chatCanvas.gameObject.SetActive(false);
+           {
+             OnChatClose();
+           }
+            
+            // chatCanvas.gameObject.SetActive(false);
         
-
-
         //  if (!chatbox.isFocused);
 
     }
+    
+    //turn off chatbox and clear messages
+    private void OnChatClose()
+    {
+        chatCanvas.gameObject.SetActive(false);
+        if (ClosedChat != null) ClosedChat.Invoke();
+        foreach (var t in messageList)
+        {
+            if (t.textObject)
+            {
+                Destroy(t.textObject.gameObject);
+            }
+        }
+
+        messageList.Clear();
+    }
+    
+    
 
     public void SendMesssage(string text, bool isLeftDir = true)
     {
