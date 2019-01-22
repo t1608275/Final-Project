@@ -25,6 +25,14 @@ public class Patrol : MonoBehaviour {
 
     }
     
+    private void OnClosedChat()
+    {
+        if (!_isChatOpen) return;
+        _isChatOpen = false;
+        _animator.SetFloat(WalkAnimHash, 0.5f);
+
+    }
+    
     private void OnOpenedChat()
     {
         //if chatbox is open make ai stop patrolling 
