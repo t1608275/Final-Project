@@ -11,10 +11,18 @@ public class Player : MonoBehaviour
     private void Start()
     {
         gamemanager.Instance.OpenedChat += OnOpenedChat;
+        gamemanager.Instance.ClosedChat += OnClosedChat;
     }
 
+    //if chat open freeze player
     private void OnOpenedChat()
     {
         _control.ISFreeze = true;
+    }
+    
+    //if chat is closed unfreeze player
+    private void OnClosedChat()
+    {
+        _control.ISFreeze = false;
     }
 }
