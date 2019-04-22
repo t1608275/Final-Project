@@ -17,7 +17,12 @@ public class MessageResource : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this; 
+        Init();
+    }
+
+    public void Init()
+    {
+        Instance = this;
         // Add in dictionary player message vs messages
         for (var i = 0; i < _messages.Length; i++)
         {
@@ -34,15 +39,18 @@ public class MessageResource : MonoBehaviour
     /// Get Message for given msg
     /// </summary>
     /// <param name="msg">Player message</param>
-    /// <returns></returns>
-    public Messages GetMessage(string msg)
+    public void GetMessage(string msg, Action<bool, string> onFinished = null)
     {
         // Convert msg to lowercase msg and
         // Check if message is contain dictionary or not
         if (_msgVsPlayerMsg.ContainsKey(msg.ToLower()))
-            return _msgVsPlayerMsg[msg.ToLower()];
-        // if message is not in dictionary then AI replies with default response
-        return new Messages(msg, "Sorry I didn't understand");
+        {
+            onFinished?.Invoke(true, _msgVsPlayerMsg[msg.ToLower()].AIMessage);
+        }
+        else
+        {
+            onFinished?.Invoke(false, "Doesn't match");
+        }
     }
 
     // Store Messages

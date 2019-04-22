@@ -18,6 +18,6 @@ public class display : MonoBehaviour {
     {
 //        //when mouse clicked chatbox appears
 //        canvas.enabled = true;
-//        Debug.Log("open");
+//        Debug.Log("why");
     }
 }

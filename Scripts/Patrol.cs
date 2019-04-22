@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Patrol : MonoBehaviour {
-    
-//make animator visibile in inspector but private to patrol script only
+public class Patrol : MonoBehaviour
+{
+
     [SerializeField] private Animator _animator;
-    
     public float movementSpeed = 5f;
     public float rotationSpeed = 90F;
 
@@ -14,55 +13,54 @@ public class Patrol : MonoBehaviour {
     private bool RotatingLeft = false;
     private bool RotatingRight = false;
     private bool walking = false;
-    private bool _isChatOpen; 
+    private bool _isChatOpen;
     private static readonly int WalkAnimHash = Animator.StringToHash("Forward");
-
 
 
     // Use this for initialization
     void Start() {
-        gamemanager.Instance.OpenedChat += OnOpenedChat;
-
+        gamemanager.Instance.OpenedChat+=OnOpenedChat;
+        gamemanager.Instance.ClosedChat+=OnClosedChat;
     }
-    
+
     private void OnClosedChat()
     {
         if (!_isChatOpen) return;
         _isChatOpen = false;
         _animator.SetFloat(WalkAnimHash, 0.5f);
-
     }
-    
+
     private void OnOpenedChat()
     {
-        //if chatbox is open make ai stop patrolling 
         _isChatOpen = true;
-        _animator.SetFloat(WalkAnimHash, 0.0f);
+        _animator.SetFloat(WalkAnimHash,0.0f);
     }
 
     // Update is called once per frame
     void Update() {
-
+        
+        if(_isChatOpen)
+            return;
+        
         if (Patrolling == false)
         {
             StartCoroutine(Wander());
 
         }
-
-        if (RotatingRight == true)
+        if (RotatingRight)
         {
             transform.Rotate(transform.up * Time.deltaTime * rotationSpeed);
         }
-        if (RotatingLeft == true)
+        if (RotatingLeft)
         {
             transform.Rotate(transform.up * Time.deltaTime * -rotationSpeed);
         }
         
-        if (walking == true)
+        if (walking)
         {
             transform.position += transform.forward * movementSpeed * Time.deltaTime;
         }
-
+        
     }
 
     IEnumerator Wander()

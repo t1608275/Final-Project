@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<aiml>
+    
+    <category>
+<pattern>id</pattern>
+<template><id>app_id/botname</id> </template>
+</category>
+
+#########NO RECOGNITION 
+  <category>
+    <pattern>*</pattern>
+    <template>
+        <random>
+            <li>Go kill a dragon and I will reward you</li>
+            <li>The blacksmith can help you with your weapons</li>
+            <li>It's a beautiful day</li>
+            <li>This town is very quiet</li>
+            <li>Is it just me and you around?</li>
+            <li>You're a Knight!</li>
+            <li>Knights and dragons, that's what I live to see</li>
+            <li>I'd like to see a dragon before I die</li>
+        </random>
+    </template>
+  </category>
+  
+  <category>
+      <pattern>* weapons</pattern>
+      <that>The blacksmith can help you with your weapons</that>
+      <template>
+        Any weapon you have
+            </template>
+   </category>
+  
+  <category>
+      <pattern>okay</pattern>
+      <that>The blacksmith can help you with your weapons</that>
+      <template>
+        I can add the location to your map
+            </template>
+   </category>
+   <category>
+      <pattern>ok</pattern>
+      <template>
+         <srai>okay</srai>
+      </template>  
+   </category>
+  
+  <category>
+      <pattern>what reward</pattern>
+      <that>Go kill a dragon and I will reward you</that>
+      <template>
+        With gold and glory!
+            </template>
+   </category>
+   <category>
+      <pattern>ok</pattern>
+      <that>Go kill a dragon and I will reward you</that>
+      <template>
+        Go do it then, no time to waste.
+            </template>
+   </category>
+   
+   <category>
+      <pattern>done</pattern>
+      <that>Go kill a dragon and I will reward you</that>
+      <template>
+        That was fast, well done!
+            </template>
+   </category>
+   
+      <category>
+      <pattern>dragon killed</pattern>
+      <that>Go kill a dragon and I will reward you</that>
+      <template>
+        That was fast, well done!
+            </template>
+   </category>
+  
+  <category>
+      <pattern>* reward</pattern>
+      <template>
+         <srai>what reward</srai>
+      </template>  
+   </category>
+   
+   <category>
+      <pattern>how</pattern>
+      <template>
+         <srai>what reward</srai>
+      </template>  
+   </category>
+   
+   <category>
+      <pattern>cool</pattern>
+      <that>With gold and glory!</that>
+      <template>
+          <random>
+        <li>Go on then!</li>
+        <li>Stop wasting time</li>
+        <li>Hurry up!</li>
+        </random>
+            </template>
+   </category>
+  
+  <category>
+      <pattern>okay</pattern>
+      <template>
+         <srai>cool</srai>
+      </template>  
+   </category>
+  
+  <category>
+      <pattern>sounds *</pattern>
+      <template>
+         <srai>cool</srai>
+      </template>  
+   </category>
+   
+   <category>
+      <pattern>* ready</pattern>
+      <template>
+         <srai>cool</srai>
+      </template>  
+   </category>
+  
+#####GREETINGS
+
+<category>
+    <pattern>Hello</pattern>
+    <template>
+        <random>
+            <li>Hello there</li>
+            <li>Nice to meet you</li>
+            <li>Hello, can I help you?</li>
+        </random>
+    </template>
+</category>
+
+   <category>
+      <pattern>yes</pattern>
+      <that>Hello, can I help you?</that>
+      <template>
+        I'm able to guide you to anywhere you like
+            </template>
+   </category>
+
+<category>
+    <pattern>Hi</pattern>
+    <template>
+        <random>
+            <li>Hello there</li>
+            <li>Nice to meet you</li>
+            <li>Hello, can I help you?</li>
+        </random>
+    </template>
+</category>
+
+<category>
+    <pattern>Hi *</pattern>
+    <template>
+        <random>
+            <li>Hello there</li>
+            <li>Nice to meet you</li>
+            <li>Hello, can I help you?</li>
+        </random>
+    </template>
+</category>
+  
+  <category>
+      <pattern>* NAME</pattern> 
+<template> 
+<random> 
+<li>I am </li> 
+<li>Call me </li> 
+<li>My name is </li> 
+<li>I am called </li> 
+<li>People call me </li> 
+<li>You can call me </li> 
+</random> 
+<condition name="customname"> 
+<li value="unknown"><bot name="name"/>.</li> 
+<li><get name="customname"/>.</li> 
+</condition> 
+</template> 
+</category>
+
+<category>
+    <pattern>unity</pattern>
+    <template>
+        <random>
+            <li>thats me</li>
+            <li>thats my name!</li>
+            <li>Yes I'm called Unity</li>
+        </random>
+    </template>
+</category>
+
+<category>
+      <pattern>* unity</pattern>
+      <template>
+          <random>
+            <li>Hello human</li>
+            <li>Hi!</li>
+        </random>
+      </template>
+   </category>
+
+
+
+<category>
+      <pattern>My name is *</pattern>
+      <template>
+          <random>
+        <li> Hi <set name = "username"> <star/>! </set></li>   
+        <li> Hello <set name = "username"> <star/>! </set></li>
+        <li> Nice to mee you <set name = "username"> <star/></set></li>
+         </random>
+      </template>  
+   </category>  
+   
+   <category>
+      <pattern>call me *</pattern>
+      <template>
+         <srai>My name is <star/></srai>
+      </template>  
+   </category> 
+   <category>
+      <pattern>im *</pattern>
+      <template>
+         <srai>My name is <star/></srai>
+      </template>  
+   </category> 
+   
+   
+   <category>
+       <pattern>How are you</pattern>
+       
+       <template>
+           Im good, thank you for asking
+       </template>
+   </category>
+   
+   
+   <category>
+      <pattern>*</pattern>
+      <that>Im good, thank you for asking</that>
+      <template>
+        you are very kind
+            </template>
+   </category>
+   
+
+
+########GUIDANCE
+
+<category>
+      <pattern>I need to find *</pattern>
+      <template>
+          <random>
+            <li>I can guide you to the <star/></li>
+            <li>I know where the <star/> is</li>
+            <li>I have added the location to your map</li>
+        </random>
+      </template>
+   </category>
+
+<category>
+   <pattern>where is the *</pattern>
+   
+   <template>
+      <srai>I need to find <star/></srai>
+   </template>
+</category>
+
+<category>
+   <pattern>how do i get to *</pattern>
+   <template>
+      <srai>I need to find <star/></srai>
+   </template>
+</category>
+
+   
+   
+   <category>
+      <pattern>Good bye</pattern>
+      <template>
+          <random>
+              <li>See you later</li>
+              <li>Enjoy your day</li>
+              <li>Take care</li>
+              <li>Thank you for talking to me</li>
+              <li>Goodbye</li>
+          </random>
+          
+      </template>  
+   </category>  
+   
+   <category>
+    <pattern>goodbye</pattern>
+    <template>
+         <srai>
+          Good bye
+          </srai>
+          </template>
+</category>
+
+   <category>
+    <pattern>bye</pattern>
+    <template>
+        <srai>Good bye</srai>
+    
+    </template>
+</category>
+
+<category>
+    <pattern>bye *</pattern>
+    <template>
+        <srai>Good bye</srai>
+    
+    </template>
+</category>
+
+
+#####ask qestion
+
+<category>
+      <pattern> * you do</pattern>
+      <template>help you, would you like to know how</template>  
+   </category>
+   
+   <category>
+      <pattern>*</pattern>
+      <that>help you, would you like to know how</that>
+      <template>
+        I can guide you, give you quests and I'm good at jokes
+            </template>
+   </category>
+   
+   <category>
+      <pattern>how</pattern>
+      <that>help you, would you like to know how</that>
+      <template>I can give you guidance on locations</template>
+   </category> 
+   
+   <category>
+      <pattern>what location</pattern>
+      <that>I can give you guidance on locations</that>
+      <template>Where do you want to go?</template>
+   </category> 
+   
+   <category>
+      <pattern>guide me</pattern>
+      <that>I can give you guidance on locations</that>
+      <template>Where do you want to go?</template>
+   </category> 
+   
+   <category>
+      <pattern>guidance</pattern>
+      <that>I can give you guidance on locations</that>
+      <template>Where do you want to go?</template>
+   </category> 
+   
+   <category>
+      <pattern>what location</pattern>
+      <that>I can give you guidance on locations</that>
+      <template>Where do you want to go?</template>
+   </category> 
+   
+   
+   
+   <category>
+      <pattern> * purpose</pattern>
+      <template>
+          <srai>* you do</srai>
+          </template>  
+   </category>
+   
+   <category>
+      <pattern> * features</pattern>
+      <template>
+          <srai>* you do</srai>
+          </template>  
+   </category>
+   
+   
+   
+   
+  <category>
+   <pattern>* joke</pattern>
+   <template>why did the chatbot get angry</template>
+   </category>
+   
+   
+     <category>
+      <pattern>*</pattern>
+      <that>why did the chatbot get angry</that>
+      <template>
+        Because its buttons kept getting pushed!
+        </template>
+   </category>
+   
+   
+   
+   <category>
+      <pattern>tell me</pattern>
+      <that>why did the chatbot get angry</that>
+      <template>
+        Because its buttons kept getting pushed!
+        </template>
+   </category>
+   
+   <category>
+      <pattern>not funny</pattern>
+      <that>Because its buttons kept getting pushed!</that>
+      <template>
+        Do you have a better one?
+        </template>
+   </category>
+   
+   <category>
+      <pattern>haha</pattern>
+      <that>Because its buttons kept getting pushed!</that>
+      <template>
+       I'm glad you liked that
+        </template>
+   </category>
+   
+ <category>
+     
+    <pattern>where are you</pattern>
+    <template>
+        <Random>
+        <li> I'm on the internet</li> 
+        <li> I'm on the world wide web</li>    
+            
+        </Random>
+    </template>
+</category>
+   
+   
+   
+   
+   
+   <category>
+      <pattern> are you * </pattern>
+      
+      <template>
+         <think><set name = "state"> happy</set></think>
+         <condition name = "state" value = "happy">
+            I am happy!
+         </condition>
+         
+         <condition name = "state" value = "sad">
+            I am sad!
+         </condition>
+      </template>
+      
+   </category>
+  
+
+</aiml>

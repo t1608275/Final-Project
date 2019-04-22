@@ -1,50 +1,90 @@
-﻿using System.Collections;
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-
-
+[Serializable]
+public enum ChatBotType
+{
+    Simple,
+    Advance
+}
 
 public class gamemanager : MonoBehaviour
 {
 
     public static gamemanager Instance;
-    public int MaxMessages = 20;
     public event Action OpenedChat;
     public event Action ClosedChat;
+    public int MaxMessages = 20;
+    public ChatBotType BotType { get; set; }
 
     public GameObject chatpanel, textObject;
-    
+
     public InputField chatbox;
+
     // Get reference for NPC
     [SerializeField] private NPC _npc;
+
     // Get reference for my chat box parent panel
     [SerializeField] private GameObject chatCanvas;
-    [SerializeField] List<Message> messageList = new List<Message>();
+    [SerializeField] private float delayReplyTime = 0.3f;
+    [SerializeField] private PandoraBotSystem botSystem;
 
+    public PandoraBotSystem BotSystem => botSystem;
+
+    private List<Message> messageList = new List<Message>();
+    private Coroutine replyMsgCor;
+    private bool isAlreadyChatOpen;
+
+    private void OnValidate()
+    {
+        if (delayReplyTime < 0.0f)
+        {
+            delayReplyTime = 0;
+        }
+    }
 
     private void Awake()
     {
         Instance = this;
         // Add function NpcOnMouseUp to NPC MouseUP event
-        _npc.MouseUp+=NpcOnMouseUp;
+        _npc.MouseUp += NpcOnMouseUp;
         chatCanvas.gameObject.SetActive(false);
+    }
+
+    private void Start()
+    {
+        UIManager.Instance.BotSelectionPannel.SetActive(false);
+        UIManager.Instance.BotBtnClicked += OnBotBtnClicked;
+    }
+
+    private void OnBotBtnClicked(ChatBotType obj)
+    {
+        BotType = obj;
+        UIManager.Instance.BotSelectionPannel.SetActive(false);
+        Debug.Log("Bot Click "+UIManager.Instance.BotSelectionPannel.activeSelf);
+        // check my chat box parent active or not
+        if (!chatCanvas.activeSelf)
+        {
+            chatCanvas.SetActive(true);
+        }
+       
     }
 
     private void NpcOnMouseUp()
     {
-        // check my chat box parent active or not
-        if (!chatCanvas.gameObject.activeSelf)
-        {
-            chatCanvas.gameObject.SetActive(true);
-            if(OpenedChat != null) OpenedChat.Invoke();
-        }
+        // When click npc player open bot selection pannel
+        if(isAlreadyChatOpen)
+            return;
+        isAlreadyChatOpen = true;
+        UIManager.Instance.BotSelectionPannel.SetActive(true);
+        if (OpenedChat != null) OpenedChat.Invoke();
     }
+
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (chatbox.text != "")
         {
@@ -56,40 +96,50 @@ public class gamemanager : MonoBehaviour
                     _npc.enabled = true;
                 // Block the next interact in input field until AI reply message
                 chatbox.interactable = false;
-                
-                // AI perform the reply message
-                // After the AI reply message then enable input field interactable
-                _npc.ReplyMessage(chatbox.text,(() => { chatbox.interactable = true; }));
-                chatbox.text = "";
+                if (replyMsgCor != null)
+                {
+                    StopCoroutine(replyMsgCor);
+                }
+
+                replyMsgCor = StartCoroutine(AIMsgReplyCor());
             }
         }
-
         else
         {
-            
             if (!chatbox.isFocused && Input.GetKeyDown(KeyCode.Return))
 
                 chatbox.ActivateInputField();
         }
 
-        //exit the chatbox by pressing escape key 
-
-        if (chatCanvas == true && Input.GetKeyDown(KeyCode.Escape))
-
-           {
-             OnChatClose();
-           }
-            
-            // chatCanvas.gameObject.SetActive(false);
+        if (chatCanvas && Input.GetKeyDown(KeyCode.Escape))
+        {
+            OnChatClose();
+        }
         
-        //  if (!chatbox.isFocused);
-
     }
-    
-    //turn off chatbox and clear messages
+
+    private IEnumerator AIMsgReplyCor()
+    {
+        yield return new WaitForSeconds(delayReplyTime);
+        var pendObj = AIThinkingPending();
+        // AI perform the reply message
+        // After the AI reply message then enable input field interactable
+        _npc.ReplyMessage(chatbox.text, ((isSucces, result) =>
+        {
+            DestroyImmediate(pendObj);
+            var reply = isSucces ? result : "Error";
+            SendMesssage(reply, false);
+            chatbox.interactable = true;
+            chatbox.Select();
+        }));
+        chatbox.text = "";
+    }
+
+
     private void OnChatClose()
     {
-        chatCanvas.gameObject.SetActive(false);
+        chatCanvas.SetActive(false);
+        UIManager.Instance.BotSelectionPannel.SetActive(false);
         if (ClosedChat != null) ClosedChat.Invoke();
         foreach (var t in messageList)
         {
@@ -99,10 +149,27 @@ public class gamemanager : MonoBehaviour
             }
         }
 
+        isAlreadyChatOpen = false;
         messageList.Clear();
     }
-    
-    
+
+    private GameObject AIThinkingPending()
+    {
+        var newMessage = new Message {text = "typing..."};
+
+        var newText = Instantiate(textObject, chatpanel.transform);
+
+        newMessage.textObject = newText.GetComponent<Text>();
+        // if message is player message then arrange the text alignment in left side
+        // else message is AI message then arrange the text alignment in right side
+        var txtColor = newMessage.textObject.color;
+        txtColor.a /= 2;
+        newMessage.textObject.color = txtColor;
+        newMessage.textObject.alignment = TextAnchor.MiddleRight;
+        newMessage.textObject.fontStyle = FontStyle.Italic;
+        newMessage.textObject.text = newMessage.text;
+        return newText;
+    }
 
     public void SendMesssage(string text, bool isLeftDir = true)
     {
@@ -112,29 +179,19 @@ public class gamemanager : MonoBehaviour
             messageList.Remove(messageList[0]);
         }
 
-        Message newMessage = new Message();
+        var newMessage = new Message {text = text};
 
-        newMessage.text = text;
-        // Arrange the previous message text box
-        for (var i = messageList.Count - 1; i >= 0; i--)
-        {
-            var pos =(RectTransform) messageList[i].textObject.transform;
-            var posLocalPosition = pos.localPosition;
-            posLocalPosition.y += pos.sizeDelta.y;
-            pos.localPosition = posLocalPosition;
-        }
+        var newText = Instantiate(textObject, chatpanel.transform);
 
-        GameObject newText = Instantiate(textObject, chatpanel.transform);
-        
         newMessage.textObject = newText.GetComponent<Text>();
-        // if message is player message then arrange the text alignment to left side
-        // else message is AI message then arrange the text alignment to right side
+        // if message is player message then arrange the text alignment in left side
+        // else message is AI message then arrange the text alignment in right side
         newMessage.textObject.alignment = isLeftDir ? TextAnchor.MiddleLeft : TextAnchor.MiddleRight;
         newMessage.textObject.text = newMessage.text;
         messageList.Add(newMessage);
     }
 
-    [System.Serializable]
+    [Serializable]
     public class Message
     {
         public string text;
