@@ -1,3 +1,3 @@
 # Final-Project
 
-  RPG game level in Unity focusing on Human Computer Interaction 
+  RPG game level in Unity focusing on chat interaction
